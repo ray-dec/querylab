@@ -1,0 +1,111 @@
+Thème abordés,Questions,Solution,Temps estimé,Difficulté
+ANALYSIS,"Effectuez un dédoublonnage de la base.
+Avez-vous trouvé des doublons ? Si oui, lequels ?","SELECT   COUNT(*) AS nbr_doublon, id, title_name, artist_id,genre_id
+FROM     `trim-airfoil-342316.interviews.title`
+GROUP BY id, title_name, artist_id, genre_id
+HAVING   COUNT(*) > 1",,Senior
+REQUETE ,Quels sont les types de musiques les plus représentés dans ce Top Charts ?,"SELECT t2.name,count(t1.id) count FROM `trim-airfoil-342316.interviews.title` t1
+LEFT JOIN `trim-airfoil-342316.interviews.genre` t2 
+ON t1.genre_id = t2.id
+GROUP BY t2.name
+ORDER BY count DESC",,Senior
+SYNTAXE,"Replacer les arguments d'une requête SQL dans le bon ordre :
+
+
+WHERE t2.name LIKE '%rap%'
+
+ORDER BY count DESC
+
+LEFT JOIN `trim-airfoil-342316.interviews.genre` t2 
+
+SELECT t2.name,count(t1.id) count FROM `trim-airfoil-342316.interviews.title` t1
+
+HAVING count(t1.id) > 5
+
+ON t1.genre_id = t2.idGROUP BY t2.name","SELECT t2.name,count(t1.id) count 
+FROM `trim-airfoil-342316.interviews.title` t1
+LEFT JOIN `trim-airfoil-342316.interviews.genre` t2 
+ON t1.genre_id = t2.id
+WHERE t2.name LIKE '%rap%'
+GROUP BY t2.name
+HAVING count(t1.id) > 5
+ORDER BY count DESC",,Senior
+REQUETE - WHERE,Top 5 des musiques au plus haut bpm,"SELECT t1.title_name, bpm FROM `trim-airfoil-342316.interviews.title` t1
+ ORDER BY bpm DESC
+ LIMIT 5",,Junior
+REQUETE - WHERE,Les 5 musiques au rythme dansant le plus faible,"SELECT t1.title_name, dnce FROM `trim-airfoil-342316.interviews.title` t1
+ ORDER BY dnce ASC
+ LIMIT 5",,Junior
+REQUETE -  GROUP BY + JOIN,Compter le nombre de musique ayant un niveau d'énergie >50,"SELECT count(t1.id) count FROM `trim-airfoil-342316.interviews.title` t1
+ WHERE nrgy > 50
+ LIMIT 10",,Junior
+REQUETE - JOIN,Recenser les 10 genres le plus représentés dans la table title.,"SELECT t2.name, count(t1.id) count FROM `trim-airfoil-342316.interviews.title` t1
+ INNER JOIN `trim-airfoil-342316.interviews.genre`t2 on t2.id = t1.genre_id
+ GROUP BY t2.name Order by count DESC
+ LIMIT 10",,Confirmé
+REQUETE - JOIN,Quels sont les 10 artistes les plus représenté dans les chart ces 10 dernières années? (en nb de musiques différentes),"SELECT t2.name , count(t1.id) count FROM `trim-airfoil-342316.interviews.title` t1
+ LEFT JOIN `trim-airfoil-342316.interviews.artist` t2 on t1.artist_id = t2.id
+ GROUP BY t2.name 
+ ORDER BY count DESC
+ LIMIT 10",,Confirmé
+REQUETE - JOIN,Sortir les titres interprétés par des bands (4 personnes ou plus) entre 2010-2019,"SELECT t1.id, title_name, artist_id, genre_id, release_year, top_year, t2.artist_type
+FROM `trim-airfoil-342316.interviews.title` t1
+LEFT JOIN `trim-airfoil-342316.interviews.atype` t2 
+ON CAST(t1.atype_id AS STRING) = CAST(t2.Artist_type_id as STRING)
+WHERE t2.artist_type = 'Band/Group'",Attention au CAST,Confirmé
+REQUETE - JOIN,Double jointure pour récupérer les noms des artistes les plus représentés (top 10) et leurs genres respectifs,"SELECT t1.name, t3.name as genre, count(t2.id) as count
+ FROM `trim-airfoil-342316.interviews.artist` t1 
+ INNER JOIN `trim-airfoil-342316.interviews.title` t2 on t1.id = t2.artist_id
+ INNER JOIN `trim-airfoil-342316.interviews.genre` t3 on t2.genre_id = t3.id
+ GROUP BY t1.name, t3.name
+LIMIT 10",,Confirmé
+SYNTAXE,"Traduire la requête SQL suivante :
+SELECT t2.name,count(t1.id) count FROM `trim-airfoil-342316.interviews.title` t1
+LEFT JOIN `trim-airfoil-342316.interviews.genre` t2 
+ON t1.genre_id = t2.id
+WHERE t2.name LIKE '%rap%'
+GROUP BY t2.name
+HAVING count(t1.id) > 5
+ORDER BY count DESC","Sortir les genres musicaux liées au rap ayant au moins 5 musiques dans les charts 2010-2019, classés de manière décroissante",,Confirmé
+ANALYSIS,Etudier un artiste en particulier (au choix),au choix,,Senior
+SYNTAXE,Optimisation d'une requête SQL,to define,,Senior
+ANALYSIS,Faire une étude détaillée des caractéristiques de la musique atl' hiphop,au choix,,Senior
+EXERCICE LIBRE,"Détailler de manière analytique le dataset (MAX,MIN, AVG, SUM, Q1/Q3, ou toute autre analyse descriptive)",au choix,,Confirmé
+Classification,"Catégorisez en 4 classes distinctes les titres musicaux selon leur énergie (colonne interviews.nrgy). 
+Stockez les résultats dans une nouvelle colonne nommée nrgy_class.","SELECT *, (CASE 
+     WHEN nrgy<60 THEN  ""low_energy""
+     WHEN nrgy>61 AND nrgy<71 THEN ""medium_low_energy""
+     WHEN nrgy>71 AND nrgy<81 THEN ""medium_high_energy""
+     ELSE ""high_energy"" 
+END) AS nrgy_class 
+FROM interviews.title",,
+Regexp,10) Sélectionnez tous les titres ET artistes contenant un chiffre ou un nombre dans leur noms : ,"SELECT t1.id, title_name, name from interviews.title t1
+INNER JOIN interviews.artist t2 ON t1.artist_id = t2.id
+WHERE REGEXP_CONTAINS(title_name,'[0-9]') OR REGEXP_CONTAINS(name,'[0-9]') ",,
+Regex version Bonus,"Sélectionnez tous les titres ET artistes remplissant au moins une des deux conditions suivantes :
+- Le titre ou l'artiste contient les caractères 'rap' dans l'ordre.
+- Le titre ou l'artiste contient un chiffre ou un nombre.
+Bonus : Précisez dans une colonne supplémentaire la ou les conditions remplies pour chaque ligne sélectionnée.
+","SELECT t1.id, title_name, name,
+(-- Bonus part., not mandatory
+-- Can be completed until the four conditions solved
+  CASE
+-- Bi-Crossed Conditions 
+     WHEN REGEXP_CONTAINS(name,'[0-9]') AND title_name like '%rap%' THEN ""title_rap_&_artist_name_regexp_09""
+     WHEN REGEXP_CONTAINS(name,'[0-9]') AND name like '%rap%' THEN ""artist_rap_&_title_regexp_09"" 
+     WHEN title_name like '%rap%' AND  name like '%rap%' THEN ""artist_&_title_name_rap""
+     WHEN REGEXP_CONTAINS(title_name,'[0-9]') AND title_name like '%rap%' THEN ""title_rap_&_title_name_regexp_09""
+     WHEN REGEXP_CONTAINS(title_name,'[0-9]') AND name like '%rap%' THEN ""artist_rap_&_title_name_regexp_09""
+     WHEN REGEXP_CONTAINS(title_name,'[0-9]') AND REGEXP_CONTAINS(name,'[0-9]') THEN ""artist_&_title_name_regexp_09""
+-- Unique condition 
+     WHEN REGEXP_CONTAINS(title_name,'[0-9]') THEN  ""title_name_regexp_09""
+     WHEN REGEXP_CONTAINS(name,'[0-9]') THEN ""artist_regexp_09""
+     WHEN title_name like '%rap%' THEN ""title_rap""
+     WHEN name like '%rap%' THEN ""artist_rap""
+
+END) AS condition
+FROM interviews.title t1
+INNER JOIN interviews.artist t2 ON t1.artist_id = t2.id
+
+WHERE title_name like '%rap%' OR name like '%rap%'
+OR REGEXP_CONTAINS(title_name,'[0-9]') OR REGEXP_CONTAINS(name,'[0-9]') ",,
