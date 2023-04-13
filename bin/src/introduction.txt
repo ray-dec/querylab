@@ -1,0 +1,11 @@
+## <u>Introduction : Mise en situation avec le cas Spotify</u>
+
+On ne présente plus la célèbre plateforme musicale verte dont la bibliothèque regroupe plus de 900 millions de sons dans le monde entier. 
+
+Vous êtes consultant Data & Tech en régie dans l'équipe Data Intelligence chez Spotify, équipe ayant pour vocation la production d'études à destination des autres équipes composant l'organisation de la firme. 
+
+Vous faites régulièrement bénéficier aux autres équipes de vos clés de lecture, utile au pilotage de l'activité. Cela passe par l'intermédiaire de divers rapports et dashboards pertinents basés sur les données que relève l'application Spotify. 
+
+Vous êtes en charge d'extraire la donnée de ces bases SQL et de présenter ces rapports aux équipes, qui s'appuient sur ces données pour orienter l'activité. 
+
+Vous trouverez ci-dessous le modèle de données regroupant l'ensemble des top charts entre 2010 et 2019 issus de l'application Spotify.
